@@ -10,12 +10,13 @@ object Hello extends App {
   val s = Scheduler.io()
   try {
     Resource
-      .pure[Task, Scheduler](s)
+      .pure[Task, Scheduler](s) // works OK if replaced by cats IO
       .use { implicit fixture =>
         Task.delay {
           Task
             .delay(println("hello world"))
-            .timeout(10.seconds)
+            .timeout(10.seconds) // works as expected if removed
+//            .executeAsync // works OK if uncommented
             .runToFuture
             .result(10.seconds)(null)
         }
